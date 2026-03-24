@@ -1,0 +1,150 @@
+@import "tailwindcss";
+
+/* 
+ * RepuLink Premium Theme 
+ * Typography: Bricolage Grotesque (Heading) / IBM Plex Sans (Body)
+ */
+
+:root {
+  /* Dark Mode First by default */
+  --background: #08080a;
+  --foreground: #ffffff;
+  --border-strong: rgba(255, 255, 255, 0.12);
+  --border-low: rgba(255, 255, 255, 0.06);
+  
+  /* Solana Purple / Neon Accents - Controlled Intensity */
+  --accent: #9945FF;
+  --accent-glow: rgba(153, 69, 255, 0.25);
+  --accent-light: #b87aff;
+  
+  --muted: #a1a1aa; /* zinc-400 */
+  --cream: rgba(255, 255, 255, 0.05); /* Used for subtle fills */
+  
+  --card: rgba(15, 15, 15, 0.6); /* Glassmorphism base */
+  --card-foreground: #ffffff;
+  
+  --radius: 1rem;
+  
+  --font-heading: "Bricolage Grotesque", system-ui, sans-serif;
+  --font-sans: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-bg1: var(--background);
+  --color-foreground: var(--foreground);
+  --color-cream: var(--cream);
+  --color-border: var(--border-strong);
+  --color-border-strong: var(--border-strong);
+  --color-border-low: var(--border-low);
+  
+  --color-primary: var(--accent);
+  --color-primary-glow: var(--accent-glow);
+  --color-primary-light: var(--accent-light);
+  
+  --color-muted: var(--muted);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  
+  --font-heading: var(--font-heading);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  
+  --radius-md: calc(var(--radius) - 4px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-transparent;
+  }
+
+  body {
+    @apply bg-bg1 text-foreground antialiased selection:bg-primary/30 selection:text-white;
+    font-family: var(--font-sans);
+    color-scheme: dark;
+    /* CSS-only static background for performance, mimicking radial gradients without paint costs */
+    background-color: var(--background);
+    background-image: 
+      radial-gradient(ellipse at 50% 0%, rgba(153, 69, 255, 0.05) 0%, transparent 60%),
+      radial-gradient(ellipse at 10% 100%, rgba(30, 0, 80, 0.3) 0%, transparent 50%);
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+  }
+
+  /* Accessibility: Prefers Reduced Motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* Custom premium utilities */
+@layer utilities {
+  .glass-panel {
+    @apply bg-card backdrop-blur-xl border border-border-low shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)];
+  }
+  /* Mobile optimized glass (less blur for perf) */
+  @media (max-width: 640px) {
+    .glass-panel {
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+  }
+
+  .glass-panel-hover {
+    @apply transition-all duration-300 ease-out hover:border-border-strong hover:bg-white/[0.08] hover:shadow-[0_0_20px_rgba(153,69,255,0.15)];
+  }
+  .neon-text {
+    text-shadow: 0 0 15px var(--accent-glow);
+  }
+  .holographic-glow {
+    box-shadow: 0 0 30px -10px var(--accent-glow);
+    animation: pulse-glow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  /* Animated blockchain grid background for Layout */
+  .bg-grid-pattern {
+    background-image: 
+      linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse at center, black 20%, transparent 80%);
+  }
+
+  /* Shimmer Skeleton for loading states */
+  .shimmer-skeleton {
+    @apply relative overflow-hidden bg-white/5;
+  }
+  .shimmer-skeleton::after {
+    content: '';
+    @apply absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent;
+    animation: shimmer 1.5s infinite ease-out;
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 30px -10px var(--accent-glow);
+  }
+  50% {
+    box-shadow: 0 0 40px -5px rgba(153, 69, 255, 0.4);
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}

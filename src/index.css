@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --arena-bg: #050b14;
+  --arena-panel: rgba(9, 16, 29, 0.78);
+  --arena-panel-soft: rgba(13, 23, 40, 0.58);
+  --arena-border: rgba(148, 163, 184, 0.16);
+  --arena-gold: #f7c948;
+  --arena-ember: #ff8a3d;
+  --arena-mint: #67e8f9;
+  --arena-ice: #effcff;
+  --arena-violet: #8b5cf6;
+  --arena-copy: #d7e6ff;
+  --arena-muted: #8ea3c7;
+  color-scheme: dark;
+}
+
+@layer base {
+  * {
+    @apply box-border;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply m-0 min-h-screen bg-[#050b14] text-slate-100 antialiased;
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
+    background-image:
+      radial-gradient(circle at 20% 0%, rgba(103, 232, 249, 0.16), transparent 28%),
+      radial-gradient(circle at 85% 15%, rgba(255, 138, 61, 0.16), transparent 24%),
+      radial-gradient(circle at 50% 100%, rgba(247, 201, 72, 0.1), transparent 38%),
+      linear-gradient(180deg, #040913 0%, #09111d 46%, #050b14 100%);
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(110, 147, 194, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(110, 147, 194, 0.05) 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: radial-gradient(circle at center, black 38%, transparent 90%);
+  }
+
+  button,
+  input,
+  textarea {
+    font: inherit;
+  }
+
+  a {
+    @apply text-inherit no-underline;
+  }
+}
+
+@layer components {
+  .arena-panel {
+    @apply border border-white/10 bg-slate-950/55 shadow-arena backdrop-blur-xl;
+  }
+
+  .arena-outline {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .arena-outline::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      rgba(247, 201, 72, 0.3),
+      rgba(103, 232, 249, 0.12),
+      rgba(255, 255, 255, 0.06)
+    );
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .section-title {
+    @apply font-display text-xs font-semibold uppercase tracking-[0.28em] text-cyan-100/65;
+  }
+
+  .status-dot {
+    @apply inline-block h-2.5 w-2.5 rounded-full;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+  }
+
+  .code-gradient {
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 22%),
+      linear-gradient(135deg, rgba(103, 232, 249, 0.08), rgba(247, 201, 72, 0.06));
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
