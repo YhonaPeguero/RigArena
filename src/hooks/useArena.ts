@@ -26,6 +26,7 @@ function reduceArenaState(state: ArenaState, event: ArenaEvent): ArenaState {
       return {
         ...state,
         status: "running",
+        code: "",
         agents: {
           ...state.agents,
           [event.agent]: "active",
@@ -42,12 +43,10 @@ function reduceArenaState(state: ArenaState, event: ArenaEvent): ArenaState {
       };
 
     case "agent_stream":
-      return event.agent === "coder"
-        ? {
-            ...state,
-            code: `${state.code}${event.content}`,
-          }
-        : state;
+      return {
+        ...state,
+        code: `${state.code}${event.content}`,
+      };
 
     case "payment":
       return {

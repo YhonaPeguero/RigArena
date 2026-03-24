@@ -1,21 +1,9 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap");
+@import "./design-tokens.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-:root {
-  --arena-bg: #050b14;
-  --arena-panel: rgba(9, 16, 29, 0.78);
-  --arena-panel-soft: rgba(13, 23, 40, 0.58);
-  --arena-border: rgba(148, 163, 184, 0.16);
-  --arena-gold: #f7c948;
-  --arena-ember: #ff8a3d;
-  --arena-mint: #67e8f9;
-  --arena-ice: #effcff;
-  --arena-violet: #8b5cf6;
-  --arena-copy: #d7e6ff;
-  --arena-muted: #8ea3c7;
-  color-scheme: dark;
-}
 
 @layer base {
   * {
@@ -27,13 +15,14 @@
   }
 
   body {
-    @apply m-0 min-h-screen bg-[#050b14] text-slate-100 antialiased;
-    font-family: "IBM Plex Sans", system-ui, sans-serif;
-    background-image:
-      radial-gradient(circle at 20% 0%, rgba(103, 232, 249, 0.16), transparent 28%),
-      radial-gradient(circle at 85% 15%, rgba(255, 138, 61, 0.16), transparent 24%),
-      radial-gradient(circle at 50% 100%, rgba(247, 201, 72, 0.1), transparent 38%),
-      linear-gradient(180deg, #040913 0%, #09111d 46%, #050b14 100%);
+    @apply m-0 min-h-screen antialiased;
+    color: var(--text-primary);
+    font-family: "Inter", system-ui, sans-serif;
+    background:
+      radial-gradient(circle at top, rgba(153, 69, 255, 0.12), transparent 24%),
+      radial-gradient(circle at 85% 8%, rgba(0, 194, 255, 0.1), transparent 22%),
+      linear-gradient(180deg, #090913 0%, var(--bg-base) 100%);
+    background-color: var(--bg-base);
   }
 
   body::before {
@@ -41,11 +30,15 @@
     position: fixed;
     inset: 0;
     pointer-events: none;
-    background-image:
-      linear-gradient(rgba(110, 147, 194, 0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(110, 147, 194, 0.05) 1px, transparent 1px);
-    background-size: 72px 72px;
-    mask-image: radial-gradient(circle at center, black 38%, transparent 90%);
+    opacity: 0.55;
+    background:
+      linear-gradient(180deg, rgba(153, 69, 255, 0.04), transparent 40%),
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 100% 100%, 68px 68px, 68px 68px;
+    transform: perspective(900px) rotateX(78deg) translateY(32%);
+    transform-origin: top center;
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.95), transparent 82%);
   }
 
   button,
@@ -55,21 +48,23 @@
   }
 
   a {
-    @apply text-inherit no-underline;
+    color: inherit;
+    text-decoration: none;
   }
 }
 
 @layer components {
-  .arena-panel {
-    @apply border border-white/10 bg-slate-950/55 shadow-arena backdrop-blur-xl;
-  }
-
-  .arena-outline {
+  .panel-shell {
     position: relative;
     overflow: hidden;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    background: rgba(15, 15, 30, 0.88);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+    backdrop-filter: blur(22px);
   }
 
-  .arena-outline::after {
+  .panel-shell::after {
     content: "";
     position: absolute;
     inset: 0;
@@ -77,9 +72,9 @@
     padding: 1px;
     background: linear-gradient(
       135deg,
-      rgba(247, 201, 72, 0.3),
-      rgba(103, 232, 249, 0.12),
-      rgba(255, 255, 255, 0.06)
+      rgba(153, 69, 255, 0.26),
+      rgba(0, 194, 255, 0.12),
+      rgba(255, 255, 255, 0.04)
     );
     -webkit-mask:
       linear-gradient(#fff 0 0) content-box,
@@ -89,28 +84,99 @@
     pointer-events: none;
   }
 
-  .section-title {
-    @apply font-display text-xs font-semibold uppercase tracking-[0.28em] text-cyan-100/65;
+  .tron-grid {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.6;
+    background:
+      linear-gradient(rgba(153, 69, 255, 0.09), transparent 40%),
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 100% 100%, 56px 56px, 56px 56px;
+    transform: perspective(900px) rotateX(72deg) translateY(28%);
+    transform-origin: top center;
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), transparent 88%);
   }
 
-  .status-dot {
-    @apply inline-block h-2.5 w-2.5 rounded-full;
+  .section-kicker {
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
   }
 }
 
 @layer utilities {
   .font-display {
-    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-family: "Space Grotesk", system-ui, sans-serif;
   }
 
-  .code-gradient {
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 22%),
-      linear-gradient(135deg, rgba(103, 232, 249, 0.08), rgba(247, 201, 72, 0.06));
+  .font-code {
+    font-family: "JetBrains Mono", monospace;
   }
 
-  .text-balance {
-    text-wrap: balance;
+  .text-gradient-brand {
+    background: linear-gradient(120deg, var(--accent-purple), var(--accent-cyan));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .shimmer::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.08) 48%,
+      transparent 100%
+    );
+    animation: shimmer 1.4s linear infinite;
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes live-blink {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes cursor-blink {
+  0%,
+  49% {
+    opacity: 0;
+  }
+  50%,
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes hue-spin {
+  from {
+    filter: hue-rotate(0deg);
+  }
+  to {
+    filter: hue-rotate(360deg);
   }
 }
 

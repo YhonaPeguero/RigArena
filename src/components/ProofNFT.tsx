@@ -1,98 +1,103 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
 import type { MintEvent } from "../types/arena";
-
-function truncate(value: string): string {
-  if (value.length <= 18) {
-    return value;
-  }
-
-  return `${value.slice(0, 8)}...${value.slice(-8)}`;
-}
-
-function buildBlinkUrl(mint: string): string {
-  return `https://dial.to/?action=solana-action:https://rigarena.dev/api/blink/${mint}`;
-}
-
-function buildExplorerUrl(mint: string): string {
-  return `https://explorer.solana.com/address/${mint}?cluster=devnet`;
-}
 
 interface ProofNFTProps {
   nft: MintEvent["nft"] | null;
   prompt: string;
 }
 
+function truncate(value: string): string {
+  return value.length > 12 ? `${value.slice(0, 5)}...${value.slice(-4)}` : value;
+}
+
 export function ProofNFT({ nft, prompt }: ProofNFTProps) {
-  const fallbackName = `Proof of Build -- ${prompt.slice(0, 28) || "RigArena Session"}`;
+  const [copied, setCopied] = useState(false);
+
+  if (!nft) {
+    return null;
+  }
+
+  const proof = nft;
+
+  async function shareProof() {
+    const url = `https://explorer.solana.com/address/${proof.mint}?cluster=devnet`;
+
+    if (navigator.share) {
+      await navigator.share({
+        title: proof.name,
+        text: `Proof of Build para ${prompt || "RigArena"}`,
+        url,
+      });
+      return;
+    }
+
+    await navigator.clipboard.writeText(url);
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1800);
+  }
 
   return (
     <AnimatePresence>
-      {nft ? (
-        <motion.section
-          initial={{ opacity: 0, y: 32, scale: 0.96 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 24 }}
-          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-          className="arena-outline rounded-[30px] border border-violet-300/25 bg-[linear-gradient(145deg,rgba(18,6,37,0.92),rgba(10,16,28,0.92))] p-5 shadow-[0_25px_90px_rgba(139,92,246,0.18)]"
-        >
-          <div className="grid gap-5 lg:grid-cols-[280px_minmax(0,1fr)] lg:items-center">
-            <div className="overflow-hidden rounded-[24px] border border-violet-200/20 bg-white/[0.03] p-3">
-              <div className="overflow-hidden rounded-[20px] border border-white/10 bg-[#12071f]">
-                <img
-                  src={nft.image}
-                  alt={nft.name}
-                  className="aspect-square h-full w-full object-cover"
-                />
-              </div>
-            </div>
+      <motion.section
+        initial={{ opacity: 0, scale: 0.75, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.92 }}
+        transition={{ type: "spring", stiffness: 180, damping: 18 }}
+        className="panel-shell mx-auto flex w-full max-w-[700px] flex-col gap-5 px-5 py-5 md:flex-row md:items-center"
+      >
+        <div className="relative h-[200px] w-[200px] shrink-0 rounded-[18px] p-[1px]">
+          <div
+            className="absolute inset-0 rounded-[18px] bg-[conic-gradient(from_0deg,var(--accent-purple),var(--accent-cyan),var(--accent-gold),var(--accent-purple))]"
+            style={{ animation: "hue-spin 8s linear infinite" }}
+          />
+          <div className="absolute inset-[1px] rounded-[17px] bg-[var(--bg-base)]" />
+          <motion.div
+            whileHover={{ scale: 1.02, filter: "brightness(1.1)" }}
+            className="absolute inset-[10px] overflow-hidden rounded-[14px]"
+            style={{ backgroundImage: `url(${proof.image})`, backgroundSize: "cover" }}
+          />
+        </div>
 
-            <div>
-              <div className="section-title text-violet-200/70">Proof NFT</div>
-              <h2 className="mt-2 font-display text-3xl text-white">
-                {nft.name || fallbackName}
-              </h2>
-              <p className="mt-3 max-w-2xl text-sm leading-6 text-violet-100/75">
-                {nft.description}
-              </p>
+        <div className="min-w-0 flex-1">
+          <div className="section-kicker">Proof NFT</div>
+          <h2 className="mt-2 font-display text-3xl font-bold text-white">
+            {proof.name || "Proof of Build"}
+          </h2>
+          <p className="mt-3 text-sm leading-7 text-[var(--text-secondary)]">
+            {proof.description}
+          </p>
 
-              <div className="mt-5 grid gap-3 rounded-[22px] border border-white/10 bg-white/[0.04] p-4 sm:grid-cols-2">
-                <div>
-                  <div className="text-xs uppercase tracking-[0.22em] text-violet-100/45">
-                    Mint Address
-                  </div>
-                  <a
-                    href={buildExplorerUrl(nft.mint)}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-2 inline-flex font-mono text-sm text-cyan-100 transition hover:text-white"
-                  >
-                    {truncate(nft.mint)}
-                  </a>
-                </div>
-                <div>
-                  <div className="text-xs uppercase tracking-[0.22em] text-violet-100/45">
-                    Status
-                  </div>
-                  <div className="mt-2 font-display text-lg text-violet-100">
-                    Soulbound ready
-                  </div>
-                </div>
-              </div>
+          <div className="mt-4 h-px bg-white/8" />
 
-              <div className="mt-5">
-                <a
-                  href={buildBlinkUrl(nft.mint)}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex rounded-[18px] border border-violet-300/30 bg-violet-400/10 px-4 py-3 text-sm font-semibold text-violet-50 transition hover:-translate-y-0.5 hover:bg-violet-400/15"
-                >
-                  Probar en devnet
-                </a>
-              </div>
-            </div>
+          <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-[var(--text-secondary)]">
+            <span>
+              MINT: <span className="font-code text-[var(--text-primary)]">{truncate(proof.mint)}</span>
+            </span>
+            <span>
+              STATUS: <span className="text-[var(--accent-green)]">✓</span>
+            </span>
           </div>
-        </motion.section>
-      ) : null}
+
+          <div className="mt-5 flex flex-wrap gap-3">
+            <a
+              href={`https://explorer.solana.com/address/${proof.mint}?cluster=devnet`}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-[12px] border border-white/10 bg-[var(--bg-elevated)] px-4 py-3 text-sm font-semibold transition hover:border-[var(--border-active)]"
+            >
+              Probar en Devnet
+            </a>
+            <button
+              type="button"
+              onClick={() => void shareProof()}
+              className="rounded-[12px] border border-white/10 bg-[var(--bg-elevated)] px-4 py-3 text-sm font-semibold transition hover:border-[var(--border-active)]"
+            >
+              {copied ? "Copiado" : "Compartir"}
+            </button>
+          </div>
+        </div>
+      </motion.section>
     </AnimatePresence>
   );
 }
