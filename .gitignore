@@ -26,3 +26,16 @@ Thumbs.db
 # IDEs
 .vscode/settings.json
 .idea/
+
+# TypeScript build cache
+*.tsbuildinfo
+
+# Vite auto-generated
+vite-env.d.ts
+
+# Compiled JS duplicates (use .ts originals)
+vite.config.js
+vite.config.d.ts
+tailwind.config.js
+tailwind.config.d.ts
+
